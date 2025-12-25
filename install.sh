@@ -13,7 +13,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-REPO_URL="https://github.com/USERNAME/claude-context-template"
+REPO_URL="https://github.com/Nnnsightnnn/claude-context-template"
 TARGET_DIR="${1:-.}"
 
 echo -e "${GREEN}Claude Context Template Installer${NC}"
