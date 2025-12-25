@@ -1,4 +1,4 @@
-# Claude Context Template
+# ClaudeKit
 
 A production-ready context system for Claude Code projects. Provides memory management, pain point tracking, and reusable commands.
 
@@ -12,16 +12,16 @@ A production-ready context system for Claude Code projects. Provides memory mana
 ### Option 2: Install Script
 ```bash
 # From your existing project
-curl -sL https://raw.githubusercontent.com/YOUR_USERNAME/claude-context-template/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/YOUR_USERNAME/claudekit/main/install.sh | bash
 ```
 
 ### Option 3: Manual Copy
 ```bash
 # Clone and copy
-git clone https://github.com/YOUR_USERNAME/claude-context-template.git /tmp/cct
-cp -r /tmp/cct/.claude /path/to/your/project/
-cp /tmp/cct/CLAUDE.md /path/to/your/project/
-rm -rf /tmp/cct
+git clone https://github.com/YOUR_USERNAME/claudekit.git /tmp/claudekit
+cp -r /tmp/claudekit/.claude /path/to/your/project/
+cp /tmp/claudekit/CLAUDE.md /path/to/your/project/
+rm -rf /tmp/claudekit
 ```
 
 ## What's Included

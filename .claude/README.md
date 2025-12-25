@@ -251,4 +251,4 @@ Run memory consolidation:
 ---
 
 **Version**: 1.0.0
-**Template Source**: Claude Context Template
+**Template Source**: ClaudeKit

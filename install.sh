@@ -1,7 +1,7 @@
 #!/bin/bash
-# Claude Context Template Installer
+# ClaudeKit Installer
 #
-# Usage: curl -fsSL https://raw.githubusercontent.com/USERNAME/claude-context-template/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/USERNAME/claudekit/main/install.sh | bash
 #    or: ./install.sh [target_directory]
 
 set -e
@@ -13,10 +13,10 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-REPO_URL="https://github.com/Nnnsightnnn/claude-context-template"
+REPO_URL="https://github.com/Nnnsightnnn/claudekit"
 TARGET_DIR="${1:-.}"
 
-echo -e "${GREEN}Claude Context Template Installer${NC}"
+echo -e "${GREEN}ClaudeKit Installer${NC}"
 echo "=================================="
 echo ""
 
