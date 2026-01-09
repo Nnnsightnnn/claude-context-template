@@ -78,7 +78,7 @@ download_file() {
 
 # Download commands
 echo "  Commands..."
-for cmd in focus investigate deep-investigate brainstorm-design plan-as-group sprint-plan orchestrate-tasks bootstrap-project; do
+for cmd in focus investigate deep-investigate brainstorm-design plan-as-group sprint-plan orchestrate-tasks bootstrap-project update-template; do
     download_file ".claude/commands/$cmd.md" ".claude/commands/$cmd.md"
 done
 
@@ -110,6 +110,10 @@ fi
 echo "  Documentation..."
 download_file ".claude/README.md" ".claude/README.md"
 
+# Download VERSION file for update tracking
+echo "  Version tracking..."
+download_file "VERSION" ".claude/VERSION"
+
 # Create .gitkeep files
 touch .claude/memory/archives/.gitkeep
 touch .claude/memory/indexes/.gitkeep
@@ -133,8 +137,12 @@ else
     [ -f "CLAUDE.md" ] && sed -i "s/\[DATE\]/$TODAY/g" "CLAUDE.md"
 fi
 
+# Get installed version
+INSTALLED_VERSION=$(cat .claude/VERSION 2>/dev/null || echo "unknown")
+
 echo ""
 echo -e "${GREEN}Installation complete!${NC}"
+echo -e "Version: ${YELLOW}$INSTALLED_VERSION${NC}"
 echo ""
 echo "Directory structure created:"
 echo ""
@@ -163,5 +171,10 @@ echo "  /deep-investigate      - Multi-agent parallel investigation"
 echo "  /sprint-plan           - Weekly sprint planning"
 echo "  /orchestrate-tasks     - Parallel task execution"
 echo "  /bootstrap-project     - Full codebase analysis"
+echo "  /update-template       - Check for and apply updates"
+echo ""
+echo "To update later:"
+echo "  /update-template --check   # Check for updates"
+echo "  /update-template           # Interactive update"
 echo ""
 echo -e "For more info, see: ${YELLOW}.claude/README.md${NC}"

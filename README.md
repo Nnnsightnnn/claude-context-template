@@ -24,6 +24,34 @@ cp /tmp/claudekit/CLAUDE.md /path/to/your/project/
 rm -rf /tmp/claudekit
 ```
 
+## Updating
+
+Already have ClaudeKit installed? Update to the latest version:
+
+### First Time Update (if you installed before v1.1.0)
+Run this command to get the update mechanism:
+```bash
+curl -fsSL https://raw.githubusercontent.com/Nnnsightnnn/claudekit/main/update.sh | bash
+```
+
+### Future Updates
+Once you have the update mechanism, use either:
+```bash
+# Via Claude Code
+/update-template --check    # Check for updates
+/update-template            # Interactive update
+
+# Or via script
+./update.sh
+```
+
+The update system:
+- **Preserves your data** - Memory, pain points, and CLAUDE.md are never touched
+- **Updates templates** - Commands and skills get the latest versions
+- **Interactive review** - Shows diffs for files that might have customizations
+- **Automatic backup** - Creates timestamped backup before any changes
+- **Easy rollback** - Run `/update-template --rollback` or `./update.sh --rollback`
+
 ## What's Included
 
 ### Commands (`.claude/commands/`)
@@ -37,6 +65,7 @@ rm -rf /tmp/claudekit
 | `/sprint-plan [week]` | Weekly sprint planning |
 | `/orchestrate-tasks` | Parallel task execution |
 | `/bootstrap-project [dir]` | Full codebase analysis and setup |
+| `/update-template` | Check for and apply template updates |
 
 ### Skills (`.claude/skills/`)
 Auto-invoked capabilities that activate based on context:
