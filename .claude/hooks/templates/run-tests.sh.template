@@ -1,0 +1,132 @@
+#!/bin/bash
+# Run tests before Claude finishes responding
+# Hook Type: Stop
+# Matcher: *
+#
+# Exit code 2 = block completion (tests failed)
+# Exit code 0 = allow completion (tests passed or skipped)
+#
+# Customize this script for your project's test setup.
+
+# Get project root
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
+cd "$PROJECT_DIR" || exit 0
+
+# Track if we ran any tests
+TESTS_RAN=false
+TESTS_PASSED=true
+
+# ============================================
+# Node.js / JavaScript / TypeScript
+# ============================================
+if [[ -f "package.json" ]]; then
+  # Check if test script exists
+  if grep -q '"test"' package.json 2>/dev/null; then
+    echo "Running Node.js tests..."
+    TESTS_RAN=true
+
+    # Detect package manager
+    if [[ -f "pnpm-lock.yaml" ]]; then
+      pnpm test
+    elif [[ -f "yarn.lock" ]]; then
+      yarn test
+    else
+      npm test
+    fi
+
+    if [[ $? -ne 0 ]]; then
+      TESTS_PASSED=false
+    fi
+  fi
+fi
+
+# ============================================
+# Python
+# ============================================
+if [[ -f "pyproject.toml" ]] || [[ -f "pytest.ini" ]] || [[ -f "setup.py" ]] || [[ -d "tests" ]]; then
+  if command -v pytest &> /dev/null; then
+    echo "Running Python tests..."
+    TESTS_RAN=true
+
+    pytest -q
+    if [[ $? -ne 0 ]]; then
+      TESTS_PASSED=false
+    fi
+  fi
+fi
+
+# ============================================
+# Go
+# ============================================
+if [[ -f "go.mod" ]]; then
+  echo "Running Go tests..."
+  TESTS_RAN=true
+
+  go test ./... -v
+  if [[ $? -ne 0 ]]; then
+    TESTS_PASSED=false
+  fi
+fi
+
+# ============================================
+# Rust
+# ============================================
+if [[ -f "Cargo.toml" ]]; then
+  echo "Running Rust tests..."
+  TESTS_RAN=true
+
+  cargo test
+  if [[ $? -ne 0 ]]; then
+    TESTS_PASSED=false
+  fi
+fi
+
+# ============================================
+# Ruby
+# ============================================
+if [[ -f "Gemfile" ]]; then
+  if grep -q "rspec" Gemfile 2>/dev/null; then
+    echo "Running Ruby tests..."
+    TESTS_RAN=true
+
+    bundle exec rspec
+    if [[ $? -ne 0 ]]; then
+      TESTS_PASSED=false
+    fi
+  fi
+fi
+
+# ============================================
+# Generic Makefile
+# ============================================
+if [[ -f "Makefile" ]] && [[ "$TESTS_RAN" == "false" ]]; then
+  if grep -q "^test:" Makefile 2>/dev/null; then
+    echo "Running Makefile tests..."
+    TESTS_RAN=true
+
+    make test
+    if [[ $? -ne 0 ]]; then
+      TESTS_PASSED=false
+    fi
+  fi
+fi
+
+# ============================================
+# Results
+# ============================================
+if [[ "$TESTS_RAN" == "false" ]]; then
+  # No tests found - allow completion
+  exit 0
+fi
+
+if [[ "$TESTS_PASSED" == "false" ]]; then
+  echo "" >&2
+  echo "========================================" >&2
+  echo "TESTS FAILED" >&2
+  echo "Please fix failing tests before completing." >&2
+  echo "========================================" >&2
+  exit 2
+fi
+
+echo "All tests passed!"
+exit 0

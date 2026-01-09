@@ -1,0 +1,65 @@
+#!/bin/bash
+# Block dangerous bash commands before execution
+# Hook Type: PreToolUse
+# Matcher: Bash
+#
+# Exit code 2 = block the command
+# Exit code 0 = allow the command
+
+COMMAND="$CLAUDE_TOOL_INPUT"
+
+# Exit if no command to check
+[[ -z "$COMMAND" ]] && exit 0
+
+# Dangerous patterns to block
+# Add or remove patterns based on your needs
+DANGEROUS_PATTERNS=(
+  # Filesystem destruction
+  "rm -rf /"
+  "rm -rf ~"
+  "rm -rf *"
+  "rm -rf ."
+  "rm -fr /"
+  "rm -fr ~"
+
+  # System damage
+  ":(){ :|:& };:"    # Fork bomb
+  "dd if=/dev"       # Raw disk writes
+  "mkfs"             # Format filesystem
+  "> /dev/sda"       # Overwrite disk
+  "chmod -R 777 /"   # Dangerous permissions
+  "chmod 777 /"
+
+  # Git force operations (uncomment to block)
+  # "git push.*--force"
+  # "git push -f"
+  # "git reset --hard"
+
+  # Database destruction (uncomment for DB projects)
+  # "drop database"
+  # "drop table"
+  # "truncate table"
+  # "delete from.*where 1"
+)
+
+# Check each pattern
+for pattern in "${DANGEROUS_PATTERNS[@]}"; do
+  # Case-insensitive matching
+  if echo "$COMMAND" | grep -qi "$pattern"; then
+    echo "========================================" >&2
+    echo "BLOCKED: Dangerous command detected" >&2
+    echo "Pattern: $pattern" >&2
+    echo "Command: $COMMAND" >&2
+    echo "========================================" >&2
+    echo "" >&2
+    echo "If this is intentional, run the command manually in your terminal." >&2
+    exit 2
+  fi
+done
+
+# Additional check: Warn about sudo (but don't block)
+if [[ "$COMMAND" == *"sudo"* ]]; then
+  echo "WARNING: Command uses sudo. Ensure this is intentional." >&2
+fi
+
+exit 0

@@ -1,0 +1,73 @@
+#!/bin/bash
+# Auto-format files after Write/Edit operations
+# Hook Type: PostToolUse
+# Matcher: Write|Edit
+#
+# Customize the formatters below for your tech stack.
+# Remove or comment out sections you don't need.
+
+FILE="$CLAUDE_FILE_PATHS"
+
+# Exit if no file specified
+[[ -z "$FILE" ]] && exit 0
+
+# Skip if file doesn't exist (was deleted)
+[[ ! -f "$FILE" ]] && exit 0
+
+# Get file extension
+EXT="${FILE##*.}"
+
+case "$EXT" in
+  # JavaScript/TypeScript - Prettier
+  ts|tsx|js|jsx|mjs|cjs)
+    if command -v npx &> /dev/null; then
+      npx prettier --write "$FILE" 2>/dev/null || true
+    fi
+    ;;
+
+  # JSON/YAML/Markdown - Prettier
+  json|yaml|yml|md)
+    if command -v npx &> /dev/null; then
+      npx prettier --write "$FILE" 2>/dev/null || true
+    fi
+    ;;
+
+  # Python - Black or Ruff
+  py)
+    if command -v black &> /dev/null; then
+      black "$FILE" 2>/dev/null || true
+    elif command -v ruff &> /dev/null; then
+      ruff format "$FILE" 2>/dev/null || true
+    fi
+    ;;
+
+  # Go - gofmt
+  go)
+    if command -v gofmt &> /dev/null; then
+      gofmt -w "$FILE"
+    fi
+    ;;
+
+  # Rust - rustfmt
+  rs)
+    if command -v rustfmt &> /dev/null; then
+      rustfmt "$FILE" 2>/dev/null || true
+    fi
+    ;;
+
+  # Ruby - RuboCop
+  rb)
+    if command -v rubocop &> /dev/null; then
+      rubocop -a "$FILE" 2>/dev/null || true
+    fi
+    ;;
+
+  # Shell scripts - shfmt
+  sh|bash)
+    if command -v shfmt &> /dev/null; then
+      shfmt -w "$FILE" 2>/dev/null || true
+    fi
+    ;;
+esac
+
+exit 0

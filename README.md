@@ -66,6 +66,23 @@ The update system:
 | `/orchestrate-tasks` | Parallel task execution |
 | `/bootstrap-project [dir]` | Full codebase analysis and setup |
 | `/update-template` | Check for and apply template updates |
+| `/hooks-analyzer` | Analyze CLAUDE.md for hook automation opportunities |
+
+### Hooks System (`.claude/hooks/`)
+Automate workflows with Claude Code hooks. Run `/hooks-analyzer` to discover opportunities based on your CLAUDE.md rules.
+
+**Hook Types:**
+| Hook | When It Fires | Use Case |
+|------|---------------|----------|
+| PreToolUse | Before tool runs | Block dangerous commands, validate inputs |
+| PostToolUse | After tool completes | Auto-format, lint |
+| Stop | Before Claude finishes | Run tests, quality gates |
+
+**Templates included:**
+- `format.sh` - Auto-format code after edits
+- `validate-bash.sh` - Block dangerous bash commands
+- `block-secrets.sh` - Prevent writing to sensitive files
+- `run-tests.sh` - Run tests before completion
 
 ### Skills (`.claude/skills/`)
 Auto-invoked capabilities that activate based on context:
@@ -118,6 +135,9 @@ your-project/
 └── .claude/
     ├── commands/               # /command files
     ├── skills/                 # Auto-invoked capabilities
+    ├── hooks/                  # Hook scripts & templates
+    │   ├── README.md          # Hook documentation
+    │   └── templates/         # Script templates
     ├── memory/
     │   ├── active/            # Hot memory
     │   ├── structured/        # Domain patterns
