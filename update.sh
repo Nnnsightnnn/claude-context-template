@@ -17,8 +17,9 @@ set -e
 # CONFIGURATION
 # =============================================================================
 
-REPO_URL="https://github.com/Nnnsightnnn/claudekit"
-RAW_URL="https://raw.githubusercontent.com/Nnnsightnnn/claudekit/main"
+# Allow overriding URLs for testing (e.g., CLAUDEKIT_RAW_URL=http://localhost:8000)
+REPO_URL="${CLAUDEKIT_REPO_URL:-https://github.com/Nnnsightnnn/claudekit}"
+RAW_URL="${CLAUDEKIT_RAW_URL:-https://raw.githubusercontent.com/Nnnsightnnn/claudekit/main}"
 TARGET_DIR="."
 BACKUP_DIR=""
 CHECK_ONLY=false
@@ -299,7 +300,7 @@ update_auto_files() {
 
     echo ""
     print_success "Updated $updated files"
-    [ $skipped -gt 0 ] && print_warning "Skipped $skipped files"
+    if [ $skipped -gt 0 ]; then print_warning "Skipped $skipped files"; fi
 }
 
 # Show diff and prompt for interactive files
@@ -452,7 +453,8 @@ handle_interactive_files() {
     print_info "Reviewing files that may have customizations..."
 
     for file in "${INTERACTIVE_FILES[@]}"; do
-        handle_interactive_file "$file"
+        # Use subshell to prevent errors from stopping the loop
+        (handle_interactive_file "$file") || true
     done
 }
 
